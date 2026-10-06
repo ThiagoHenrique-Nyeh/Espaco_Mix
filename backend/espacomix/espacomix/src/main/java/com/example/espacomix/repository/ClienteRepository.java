@@ -1,4 +1,7 @@
 package com.example.espacomix.repository;
 
-public interface ClienteRepository {
+import com.example.espacomix.model.ClienteModel;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ClienteRepository extends JpaRepository<ClienteModel,Long> {
 }
