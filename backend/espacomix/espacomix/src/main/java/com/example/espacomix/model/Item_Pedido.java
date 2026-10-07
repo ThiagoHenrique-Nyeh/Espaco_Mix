@@ -5,30 +5,30 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "item_pedido")
-public class Item_PedidoModel {
+public class Item_Pedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "preco_unitario", precision = 10, scale = 2)
+    @Column(name = "preco_unitario", precision = 10, scale = 2, nullable = false)
     private BigDecimal precoUnitario;
 
-    @Column(name = "quantidade_de_itens_pedidos")
+    @Column(name = "quantidade_de_itens_pedidos", nullable = false)
     private Integer quantidadeDeItensPedidos;
 
     @ManyToOne
-    @JoinColumn(name = "id_pedido")
-    private PedidoModel pedido;
+    @JoinColumn(name = "id_pedido", nullable = false)
+    private Pedido pedido;
 
     @ManyToOne
-    @JoinColumn(name = "id_produto")
-    private ProdutoModel produto;
+    @JoinColumn(name = "id_produto", nullable = false)
+    private Produto produto;
 
-    public Item_PedidoModel() {
+    public Item_Pedido() {
     }
 
-    public Item_PedidoModel(Long id, BigDecimal precoUnitario, Integer quantidadeDeItensPedidos, PedidoModel pedido, ProdutoModel produto) {
+    public Item_Pedido(Long id, BigDecimal precoUnitario, Integer quantidadeDeItensPedidos, Pedido pedido, Produto produto) {
         this.id = id;
         this.precoUnitario = precoUnitario;
         this.quantidadeDeItensPedidos = quantidadeDeItensPedidos;
@@ -60,19 +60,19 @@ public class Item_PedidoModel {
         this.quantidadeDeItensPedidos = quantidadeDeItensPedidos;
     }
 
-    public PedidoModel getPedido() {
+    public Pedido getPedido() {
         return pedido;
     }
 
-    public void setPedido(PedidoModel pedido) {
+    public void setPedido(Pedido pedido) {
         this.pedido = pedido;
     }
 
-    public ProdutoModel getProduto() {
+    public Produto getProduto() {
         return produto;
     }
 
-    public void setProduto(ProdutoModel produto) {
+    public void setProduto(Produto produto) {
         this.produto = produto;
     }
 }

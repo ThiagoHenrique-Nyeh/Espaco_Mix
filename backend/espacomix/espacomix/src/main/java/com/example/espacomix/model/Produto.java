@@ -5,19 +5,19 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "produto")
-public class ProdutoModel {
+public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     private String nome;
 
     @Column(length = 50)
     private String descricao;
 
-    @Column(precision = 10, scale = 2)
+    @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal preco;
 
     @Column(length = 30)
@@ -26,13 +26,13 @@ public class ProdutoModel {
     @Column(length = 50)
     private String cor;
 
-    @Column(length = 50)
+    @Column(length = 50, nullable = false)
     private String categoria;
 
-    public ProdutoModel() {
+    public Produto() {
     }
 
-    public ProdutoModel(Long id, String nome, String descricao, BigDecimal preco, String tamanho, String cor, String categoria) {
+    public Produto(Long id, String nome, String descricao, BigDecimal preco, String tamanho, String cor, String categoria) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;

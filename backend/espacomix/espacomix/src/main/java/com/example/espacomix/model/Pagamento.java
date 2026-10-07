@@ -6,23 +6,23 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "pagamento")
-public class PagamentoModel {
+public class Pagamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_pedido")
-    private PedidoModel pedido;
+    @JoinColumn(name = "id_pedido", nullable = false)
+    private Pedido pedido;
 
-    @Column(name = "metodo_pagamento", length = 50)
+    @Column(name = "metodo_pagamento", length = 50, nullable = false)
     private String metodoPagamento;
 
-    @Column(name = "status_pagamento", length = 50)
+    @Column(name = "status_pagamento", length = 50, nullable = false)
     private String statusPagamento;
 
-    @Column(name = "valor_pago", precision = 10, scale = 2)
+    @Column(name = "valor_pago", precision = 10, scale = 2, nullable = false)
     private BigDecimal valorPago;
 
     @Column(name = "numero_parcelas")
@@ -31,14 +31,14 @@ public class PagamentoModel {
     @Column(name = "valor_parcelas", precision = 10, scale = 2)
     private BigDecimal valorParcelas;
 
-    @Column(name = "data_pagamento")
+    @Column(name = "data_pagamento", nullable = false)
     private LocalDateTime dataPagamento;
 
-    public PagamentoModel() {
+    public Pagamento() {
     }
 
-    public PagamentoModel(Long id, PedidoModel pedido, String metodoPagamento, String statusPagamento,
-                          BigDecimal valorPago, Integer numeroParcelas, BigDecimal valorParcelas, LocalDateTime dataPagamento) {
+    public Pagamento(Long id, Pedido pedido, String metodoPagamento, String statusPagamento,
+                     BigDecimal valorPago, Integer numeroParcelas, BigDecimal valorParcelas, LocalDateTime dataPagamento) {
         this.id = id;
         this.pedido = pedido;
         this.metodoPagamento = metodoPagamento;
@@ -57,11 +57,11 @@ public class PagamentoModel {
         this.id = id;
     }
 
-    public PedidoModel getPedido() {
+    public Pedido getPedido() {
         return pedido;
     }
 
-    public void setPedido(PedidoModel pedido) {
+    public void setPedido(Pedido pedido) {
         this.pedido = pedido;
     }
 

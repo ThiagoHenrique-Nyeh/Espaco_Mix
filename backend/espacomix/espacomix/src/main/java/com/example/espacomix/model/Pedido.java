@@ -6,29 +6,29 @@ import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "pedido")
-public class PedidoModel {
+public class Pedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "valor_total", precision = 10, scale = 2)
+    @Column(name = "valor_total", precision = 10, scale = 2, nullable = false)
     private BigDecimal valorTotal;
 
-    @Column(name = "data_e_hora_pedido")
+    @Column(name = "data_e_hora_pedido", nullable = false)
     private OffsetDateTime dataEHoraPedido;
 
     @ManyToOne
-    @JoinColumn(name = "id_cliente")
-    private ClienteModel cliente;
+    @JoinColumn(name = "id_cliente", nullable = false)
+    private Cliente cliente;
 
-    @Column(name = "status_pedido", length = 30)
+    @Column(name = "status_pedido", length = 30, nullable = false)
     private String statusPedido;
 
-    public PedidoModel() {
+    public Pedido() {
     }
 
-    public PedidoModel(Long id, BigDecimal valorTotal, OffsetDateTime dataEHoraPedido, ClienteModel cliente, String statusPedido) {
+    public Pedido(Long id, BigDecimal valorTotal, OffsetDateTime dataEHoraPedido, Cliente cliente, String statusPedido) {
         this.id = id;
         this.valorTotal = valorTotal;
         this.dataEHoraPedido = dataEHoraPedido;
@@ -60,11 +60,11 @@ public class PedidoModel {
         this.dataEHoraPedido = dataEHoraPedido;
     }
 
-    public ClienteModel getCliente() {
+    public Cliente getCliente() {
         return cliente;
     }
 
-    public void setCliente(ClienteModel cliente) {
+    public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
 

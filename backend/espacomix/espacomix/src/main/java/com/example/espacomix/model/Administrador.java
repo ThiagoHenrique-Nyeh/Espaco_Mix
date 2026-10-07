@@ -4,22 +4,22 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "administrador")
-public class AdministradorModel {
+public class Administrador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "senha_admin", length = 30)
+    @Column(name = "senha_admin", length = 30, nullable = false)
     private String senhaAdmin;
 
-    @Column(unique = true, length = 80)
+    @Column(unique = true, length = 80, nullable = false)
     private String email;
 
-    public AdministradorModel() {
+    public Administrador() {
     }
 
-    public AdministradorModel(Long id, String senhaAdmin, String email) {
+    public Administrador(Long id, String senhaAdmin, String email) {
         this.id = id;
         this.senhaAdmin = senhaAdmin;
         this.email = email;

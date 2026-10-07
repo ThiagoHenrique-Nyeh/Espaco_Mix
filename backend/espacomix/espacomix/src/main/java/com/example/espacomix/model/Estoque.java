@@ -5,25 +5,26 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "estoque")
-public class EstoqueModel {
+public class Estoque {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "produto_id")
-    private ProdutoModel produto;
+    @JoinColumn(name = "produto_id", nullable = false, unique = true)
+    private Produto produto;
 
+    @Column(nullable = false)
     private Integer quantidade;
 
-    @Column(name = "ultima_atualizacao")
+    @Column(name = "ultima_atualizacao", nullable = false)
     private LocalDateTime ultimaAtualizacao;
 
-    public EstoqueModel() {
+    public Estoque() {
     }
 
-    public EstoqueModel(Long id, ProdutoModel produto, Integer quantidade, LocalDateTime ultimaAtualizacao) {
+    public Estoque(Long id, Produto produto, Integer quantidade, LocalDateTime ultimaAtualizacao) {
         this.id = id;
         this.produto = produto;
         this.quantidade = quantidade;
@@ -38,11 +39,11 @@ public class EstoqueModel {
         this.id = id;
     }
 
-    public ProdutoModel getProduto() {
+    public Produto getProduto() {
         return produto;
     }
 
-    public void setProduto(ProdutoModel produto) {
+    public void setProduto(Produto produto) {
         this.produto = produto;
     }
 
