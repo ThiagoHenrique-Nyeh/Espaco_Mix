@@ -1,8 +1,9 @@
 package com.example.espacomix.repository;
 
-import com.example.espacomix.model.ClienteModel;
-import com.example.espacomix.model.PagamentoModel;
+import com.example.espacomix.model.Pagamento;
 import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
-public interface PagamentoRepository extends JpaRepository<PagamentoModel,Long> {
+public interface PagamentoRepository extends JpaRepository<Pagamento,Long> {
+    Optional<Pagamento> findByPedidoId(Long idPedido);
 }

@@ -1,8 +1,10 @@
 package com.example.espacomix.repository;
 
-import com.example.espacomix.model.ClienteModel;
-import com.example.espacomix.model.PedidoModel;
+import com.example.espacomix.model.Pedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PedidoRepository extends JpaRepository<PedidoModel,Long> {
+import java.util.List;
+
+public interface PedidoRepository extends JpaRepository<Pedido,Long> {
+    List<Pedido> findByClienteId(Long idCliente);
 }
