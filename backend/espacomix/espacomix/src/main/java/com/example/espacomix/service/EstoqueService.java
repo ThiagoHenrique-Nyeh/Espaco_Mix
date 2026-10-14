@@ -2,6 +2,7 @@ package com.example.espacomix.service;
 
 import com.example.espacomix.model.Estoque;
 import com.example.espacomix.repository.EstoqueRepository;
+import com.example.espacomix.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,31 @@ public class EstoqueService {
 
     @Autowired
     private EstoqueRepository estoqueRepository;
+
+    @Autowired
+    private ProdutoRepository produtoRepository;
+
+    public Estoque salvar(Estoque estoque) {
+        if (estoque.getProduto() == null || estoque.getProduto().getId() == null) {
+            throw new RuntimeException("O PRODUTO E OBRIGATORIO PARA CRIAR O ESTOQUE");
+        }
+
+        Long idProduto = estoque.getProduto().getId();
+        if (!produtoRepository.existsById(idProduto)) {
+            throw new RuntimeException("PRODUTO COM O ID " + idProduto + " NAO FOI ENCONTRADO");
+        }
+
+        if (estoque.getQuantidade() == null) {
+            estoque.setQuantidade(0);
+        } else if (estoque.getQuantidade() < 0) {
+            throw new RuntimeException("A QUANTIDADE INICIAL NAO PODE SER NEGATIVA");
+        }
+
+        estoque.setUltimaAtualizacao(LocalDateTime.now());
+        return estoqueRepository.save(estoque);
+    }
+
+
 
     // --> [BUSCAR ESTOQUE PELO ID DO PRODUTO]
     public Estoque buscaPorProdutoId(Long idProduto) {

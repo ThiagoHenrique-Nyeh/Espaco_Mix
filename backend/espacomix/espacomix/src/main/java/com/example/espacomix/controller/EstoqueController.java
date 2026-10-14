@@ -3,6 +3,7 @@ package com.example.espacomix.controller;
 import com.example.espacomix.model.Estoque;
 import com.example.espacomix.service.EstoqueService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,14 @@ public class EstoqueController {
 
     @Autowired
     private EstoqueService estoqueService;
+
+
+
+    @PostMapping
+    public ResponseEntity<Estoque> salvar(@RequestBody Estoque estoque) {
+        Estoque novoEstoque = estoqueService.salvar(estoque);
+        return new ResponseEntity<>(novoEstoque, HttpStatus.CREATED);
+    }
 
 
 
