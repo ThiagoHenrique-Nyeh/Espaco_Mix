@@ -1,5 +1,6 @@
 package com.example.espacomix.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,6 +12,7 @@ public class Administrador {
     private Long id;
 
     @Column(name = "senha_admin", length = 30, nullable = false)
+    @JsonIgnore
     private String senhaAdmin;
 
     @Column(unique = true, length = 80, nullable = false)

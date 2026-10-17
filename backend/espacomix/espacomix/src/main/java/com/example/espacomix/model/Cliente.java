@@ -1,5 +1,6 @@
 package com.example.espacomix.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -29,6 +30,7 @@ public class Cliente {
     private String email;
 
     @Column(length = 255, nullable = false)
+    @JsonIgnore
     private String senha;
 
     public Cliente() {
