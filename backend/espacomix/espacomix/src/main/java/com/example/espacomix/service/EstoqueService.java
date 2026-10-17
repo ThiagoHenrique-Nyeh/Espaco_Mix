@@ -1,6 +1,7 @@
 package com.example.espacomix.service;
 
 import com.example.espacomix.model.Estoque;
+import com.example.espacomix.model.Produto;
 import com.example.espacomix.repository.EstoqueRepository;
 import com.example.espacomix.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,11 @@ public class EstoqueService {
         }
 
         Long idProduto = estoque.getProduto().getId();
-        if (!produtoRepository.existsById(idProduto)) {
-            throw new RuntimeException("PRODUTO COM O ID " + idProduto + " NAO FOI ENCONTRADO");
-        }
+
+        Produto produtoCompleto = produtoRepository.findById(idProduto)
+                .orElseThrow(() -> new RuntimeException("PRODUTO COM O ID " + idProduto + " NAO FOI ENCONTRADO"));
+
+        estoque.setProduto(produtoCompleto);
 
         if (estoque.getQuantidade() == null) {
             estoque.setQuantidade(0);
