@@ -1,5 +1,6 @@
 package com.example.espacomix.service;
 
+import com.example.espacomix.model.Cliente;
 import com.example.espacomix.model.Pedido;
 import com.example.espacomix.repository.ClienteRepository;
 import com.example.espacomix.repository.PedidoRepository;
@@ -26,10 +27,11 @@ public class PedidoService {
         }
 
         Long idCliente = pedido.getCliente().getId();
-        if (!clienteRepository.existsById(idCliente)) {
-            throw new RuntimeException("CLIENTE COM O ID " + idCliente + " NAO FOI ENCONTRADO");
-        }
 
+        Cliente clienteCompleto = clienteRepository.findById(idCliente)
+                .orElseThrow(() -> new RuntimeException("CLIENTE COM O ID " + idCliente + " NAO FOI ENCONTRADO"));
+
+        pedido.setCliente(clienteCompleto);
 
         if (pedido.getValorTotal() == null) {
             pedido.setValorTotal(BigDecimal.ZERO);
