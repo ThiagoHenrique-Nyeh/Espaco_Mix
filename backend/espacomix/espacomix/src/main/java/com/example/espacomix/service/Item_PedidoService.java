@@ -57,6 +57,8 @@ public class Item_PedidoService {
             throw new RuntimeException("O PREÇO UNITÁRIO DEVE SER MAIOR QUE ZERO");
         }
 
+        itemPedido.setPrecoUnitario(produtoExistente.getPreco());
+
         estoqueService.darBaixaQuantidade(idProduto, itemPedido.getQuantidadeDeItensPedidos());
 
         itemPedido.setPedido(pedidoExistente);
