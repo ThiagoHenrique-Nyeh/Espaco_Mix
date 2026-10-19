@@ -8,7 +8,6 @@ import com.example.espacomix.repository.PedidoRepository;
 import com.example.espacomix.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -49,12 +48,6 @@ public class Item_PedidoService {
         boolean temEstoque = estoqueService.validarDisponibilidade(idProduto, itemPedido.getQuantidadeDeItensPedidos());
         if (!temEstoque) {
             throw new RuntimeException("ESTOQUE INSUFICIENTE PARA O PRODUTO COM O ID " + idProduto);
-        }
-
-        if (itemPedido.getPrecoUnitario() == null) {
-            itemPedido.setPrecoUnitario(produtoExistente.getPreco());
-        } else if (itemPedido.getPrecoUnitario().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new RuntimeException("O PREÇO UNITÁRIO DEVE SER MAIOR QUE ZERO");
         }
 
         itemPedido.setPrecoUnitario(produtoExistente.getPreco());
