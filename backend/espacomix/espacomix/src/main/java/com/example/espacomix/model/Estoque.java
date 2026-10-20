@@ -1,6 +1,8 @@
 package com.example.espacomix.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,6 +20,7 @@ public class Estoque {
     @Column(nullable = false)
     private Integer quantidade;
 
+    @UpdateTimestamp
     @Column(name = "ultima_atualizacao", nullable = false)
     private LocalDateTime ultimaAtualizacao;
 

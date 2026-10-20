@@ -43,7 +43,6 @@ public class EstoqueService {
 
 
 
-    // --> [BUSCAR ESTOQUE PELO ID DO PRODUTO]
     public Estoque buscaPorProdutoId(Long idProduto) {
         return estoqueRepository.findByProdutoId(idProduto)
                 .orElseThrow(() -> new RuntimeException("ESTOQUE NAO ENCONTRADO PARA O PRODUTO COM O ID " + idProduto));
@@ -51,7 +50,6 @@ public class EstoqueService {
 
 
 
-    // --> [ADICIONAR QUANTIDADE AO ESTOQUE]
     public Estoque adicionarQuantidade(Long idProduto, Integer quantidadeParaAdicionar) {
         if (quantidadeParaAdicionar == null || quantidadeParaAdicionar <= 0) {
             throw new RuntimeException("A QUANTIDADE A ADICIONAR DEVE SER MAIOR QUE ZERO");
@@ -64,8 +62,6 @@ public class EstoqueService {
     }
 
 
-
-    // --> [REMOVER QUANTIDADE DO ESTOQUE / DAR BAIXA]
     public Estoque darBaixaQuantidade(Long idProduto, Integer quantidadeParaBaixar) {
         if (quantidadeParaBaixar == null || quantidadeParaBaixar <= 0) {
             throw new RuntimeException("A QUANTIDADE A DAR BAIXA DEVE SER MAIOR QUE ZERO");
@@ -83,8 +79,6 @@ public class EstoqueService {
     }
 
 
-
-    // --> [ZERAR O ESTOQUE]
     public Estoque zerarEstoque(Long idProduto) {
         Estoque estoque = buscaPorProdutoId(idProduto);
         estoque.setQuantidade(0);
@@ -94,8 +88,6 @@ public class EstoqueService {
     }
 
 
-
-    // --> [VALIDAR DISPONIBILIDADE NO ESTOQUE]
     public boolean validarDisponibilidade(Long idProduto, Integer quantidadeDesejada) {
         Estoque estoque = buscaPorProdutoId(idProduto);
         return estoque.getQuantidade() >= quantidadeDesejada;
