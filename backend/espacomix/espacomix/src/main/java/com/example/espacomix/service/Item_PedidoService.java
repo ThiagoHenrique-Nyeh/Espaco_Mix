@@ -57,6 +57,18 @@ public class Item_PedidoService {
         itemPedido.setPedido(pedidoExistente);
         itemPedido.setProduto(produtoExistente);
 
+
+        BigDecimal subtotalItem = itemPedido.getPrecoUnitario()
+              .multiply(BigDecimal.valueOf(itemPedido.getQuantidadeDeItensPedidos()));
+
+        BigDecimal valorAtualPedido = pedidoExistente.getValorTotal() != null
+                ? pedidoExistente.getValorTotal()
+                : BigDecimal.ZERO;
+
+        pedidoExistente.setValorTotal(valorAtualPedido.add(subtotalItem));
+        pedidoRepository.save(pedidoExistente);
+
+
         return item_PedidoRepository.save(itemPedido);
     }
 
