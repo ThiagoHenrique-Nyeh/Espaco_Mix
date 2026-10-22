@@ -38,12 +38,21 @@ public class PagamentoService {
         }
 
         if (pagamento.getStatusPagamento() == null || pagamento.getStatusPagamento().trim().isEmpty()) {
-            throw new RuntimeException("O STATUS DO PAGAMENTO E OBRIGATORIO");
+            pagamento.setStatusPagamento("PENDENTE");
+        }
+
+        if (pagamento.getPedido().getValorTotal() == null){
+            throw new RuntimeException("PEDIDO NAO POSSUI UM VALOR TOTAL NO MOMENTO");
+        }
+
+        if (pagamento.getValorPago().compareTo(pedidoExistente.getValorTotal()) != 0) {
+            throw new RuntimeException("O VALOR PAGO DEVE SER IGUAL AO VALOR TOTAL DO PEDIDO");
         }
 
         if (pagamento.getDataPagamento() == null) {
             pagamento.setDataPagamento(LocalDateTime.now());
         }
+
         pagamento.setPedido(pedidoExistente);
 
         return pagamentoRepository.save(pagamento);
