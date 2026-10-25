@@ -6,8 +6,10 @@ import com.example.espacomix.repository.PagamentoRepository;
 import com.example.espacomix.repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,6 +22,7 @@ public class PagamentoService {
     @Autowired
     private PedidoRepository pedidoRepository;
 
+    @Transactional
     public Pagamento salvar(Pagamento pagamento) {
         if (pagamento.getPedido() == null || pagamento.getPedido().getId() == null) {
             throw new RuntimeException("O PEDIDO E OBRIGATORIO PARA PROCESSAR O PAGAMENTO");
@@ -49,15 +52,43 @@ public class PagamentoService {
             throw new RuntimeException("O VALOR PAGO DEVE SER IGUAL AO VALOR TOTAL DO PEDIDO");
         }
 
+        if (pagamento.getMetodoPagamento()== null || pagamento.getMetodoPagamento().trim().isEmpty()){
+            throw new RuntimeException("O MÉTODO DE PAGAMENTO É OBRIGATÓRIO");
+        }
+
+        String metodo = pagamento.getMetodoPagamento().toUpperCase();
+
+        if (metodo.equals("PIX") || metodo.equals("DEBITO")) {
+            pagamento.setNumeroParcelas(1);
+            pagamento.setValorParcelas(pedidoExistente.getValorTotal());
+        } else if (metodo.equals("CREDITO")) {
+            if (pagamento.getNumeroParcelas() == null || pagamento.getNumeroParcelas() <= 0) {
+                pagamento.setNumeroParcelas(1);
+            }
+
+            BigDecimal numParcelas = BigDecimal.valueOf(pagamento.getNumeroParcelas());
+            BigDecimal valorParcelaCalculado = pedidoExistente.getValorTotal()
+                    .divide(numParcelas, 2, RoundingMode.HALF_UP);
+            pagamento.setValorParcelas(valorParcelaCalculado);
+        } else {
+            throw new RuntimeException("METODO DE PAGAMENTO INVALIDO. USE PIX, DEBITO OU CREDITO");
+        }
+
+        if (pagamento.getStatusPagamento() == null || pagamento.getStatusPagamento().trim().isEmpty()) {
+            pagamento.setStatusPagamento("PENDENTE");
+        }
+
         if (pagamento.getDataPagamento() == null) {
             pagamento.setDataPagamento(LocalDateTime.now());
         }
 
         pagamento.setPedido(pedidoExistente);
 
+        pedidoExistente.setStatusPedido("PAGO");
+        pedidoRepository.save(pedidoExistente);
+
         return pagamentoRepository.save(pagamento);
     }
-
 
 
     public List<Pagamento> listarTudo() {
