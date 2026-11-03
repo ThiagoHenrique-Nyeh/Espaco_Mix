@@ -2,9 +2,9 @@ package com.example.espacomix.service;
 
 import com.example.espacomix.model.Administrador;
 import com.example.espacomix.repository.AdministradorRepository;
-import com.example.espacomix.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -13,6 +13,9 @@ public class AdministradorService {
 
     @Autowired
     private AdministradorRepository administradorRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private static final String EMAIL_REGEX = "^[\\w.+-]+@[\\w-]+\\.[a-zA-Z]{2,}$";
     private static final String SENHA_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$";
@@ -28,7 +31,12 @@ public class AdministradorService {
     }if(!administrador.getSenhaAdmin().matches(SENHA_REGEX)){
         throw new RuntimeException("SENHA INVALIDA");
     }
-    return administradorRepository.save(administrador);
+
+        administrador.setSenhaAdmin(
+                passwordEncoder.encode(administrador.getSenhaAdmin())
+        );
+
+        return administradorRepository.save(administrador);
     }
 
 

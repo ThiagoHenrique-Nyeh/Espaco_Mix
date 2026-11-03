@@ -1,6 +1,6 @@
 package com.example.espacomix.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,8 +11,8 @@ public class Administrador {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "senha_admin", length = 30, nullable = false)
-    @JsonIgnore
+    @Column(name = "senha_admin", length = 100, nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senhaAdmin;
 
     @Column(unique = true, length = 80, nullable = false)
