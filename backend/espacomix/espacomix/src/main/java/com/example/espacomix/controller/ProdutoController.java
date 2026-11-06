@@ -1,3 +1,4 @@
+
 package com.example.espacomix.controller;
 
 import com.example.espacomix.model.Produto;
@@ -16,7 +17,6 @@ public class ProdutoController {
 
     @Autowired
     private ProdutoService produtoService;
-
 
 
     @PostMapping
@@ -41,10 +41,20 @@ public class ProdutoController {
 
 
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Produto> atualizar(
+            @PathVariable Long id,
+            @RequestBody Produto produto) {
+
+        Produto produtoAtualizado = produtoService.atualizar(id, produto);
+        return ResponseEntity.ok(produtoAtualizado);
+    }
+
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         produtoService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 }
-
