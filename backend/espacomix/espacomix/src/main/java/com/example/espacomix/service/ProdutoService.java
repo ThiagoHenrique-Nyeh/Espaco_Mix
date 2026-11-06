@@ -1,3 +1,4 @@
+
 package com.example.espacomix.service;
 
 import com.example.espacomix.model.Produto;
@@ -43,6 +44,34 @@ public class ProdutoService {
     public Produto buscaId(Long id) {
         return produtoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("PRODUTO COM O ID " + id + " NAO FOI ENCONTRADO"));
+    }
+
+
+
+    public Produto atualizar(Long id, Produto novosDados) {
+
+        Produto produtoExistente = buscaId(id);
+
+        if (novosDados.getNome() == null || novosDados.getNome().trim().isEmpty()) {
+            throw new RuntimeException("O NOME DO PRODUTO E OBRIGATORIO");
+        }
+
+        if (novosDados.getPreco() == null || novosDados.getPreco().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("O PRECO DO PRODUTO DEVE SER MAIOR QUE ZERO");
+        }
+
+        if (novosDados.getCategoria() == null || novosDados.getCategoria().trim().isEmpty()) {
+            throw new RuntimeException("A CATEGORIA DO PRODUTO E OBRIGATORIA");
+        }
+
+        produtoExistente.setNome(novosDados.getNome());
+        produtoExistente.setDescricao(novosDados.getDescricao());
+        produtoExistente.setPreco(novosDados.getPreco());
+        produtoExistente.setTamanho(novosDados.getTamanho());
+        produtoExistente.setCor(novosDados.getCor());
+        produtoExistente.setCategoria(novosDados.getCategoria());
+
+        return produtoRepository.save(produtoExistente);
     }
 
 
