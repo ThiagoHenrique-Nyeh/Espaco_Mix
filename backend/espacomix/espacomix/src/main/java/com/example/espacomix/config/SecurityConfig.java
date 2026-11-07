@@ -60,6 +60,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/pedido/*")
                         .hasRole("ADMIN")
 
+
+
+
                         .requestMatchers(HttpMethod.POST, "/itempedido")
                         .hasRole("CLIENTE")
 
@@ -71,6 +74,23 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.DELETE, "/itempedido/**")
                         .hasRole("CLIENTE")
+
+
+
+                        .requestMatchers(HttpMethod.POST, "/pagamento")
+                        .hasRole("CLIENTE")
+
+                        .requestMatchers(HttpMethod.GET, "/pagamento")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/pagamento/*")
+                        .hasAnyRole("ADMIN", "CLIENTE")
+
+                        .requestMatchers(HttpMethod.GET, "/pagamento/pedido/**")
+                        .hasAnyRole("ADMIN", "CLIENTE")
+
+                        .requestMatchers(HttpMethod.DELETE, "/pagamento/**")
+                        .hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
