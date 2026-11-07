@@ -4,12 +4,17 @@ package com.example.espacomix.service;
 import com.example.espacomix.model.Pagamento;
 import com.example.espacomix.model.Pedido;
 import com.example.espacomix.model.Item_Pedido;
+import com.example.espacomix.model.Cliente;
 import com.example.espacomix.repository.PagamentoRepository;
 import com.example.espacomix.repository.PedidoRepository;
 import com.example.espacomix.repository.Item_PedidoRepository;
+import com.example.espacomix.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -30,6 +35,9 @@ public class PagamentoService {
     private Item_PedidoRepository itemPedidoRepository;
 
     @Autowired
+    private ClienteRepository clienteRepository;
+
+    @Autowired
     private EstoqueService estoqueService;
 
     @Transactional
@@ -43,6 +51,22 @@ public class PagamentoService {
 
         Pedido pedidoExistente = pedidoRepository.findById(idPedido)
                 .orElseThrow(() -> new RuntimeException("PEDIDO COM O ID " + idPedido + " NAO FOI ENCONTRADO"));
+
+        Authentication autenticacao = SecurityContextHolder.getContext().getAuthentication();
+
+        if (autenticacao == null || !autenticacao.isAuthenticated()) {
+            throw new AccessDeniedException("USUARIO NAO AUTENTICADO");
+        }
+
+        String email = autenticacao.getName();
+
+        Cliente clienteAutenticado = clienteRepository.findByEmail(email)
+                .orElseThrow(() -> new AccessDeniedException("CLIENTE NAO ENCONTRADO"));
+
+        if (pedidoExistente.getCliente() == null ||
+                !pedidoExistente.getCliente().getId().equals(clienteAutenticado.getId())) {
+            throw new AccessDeniedException("VOCE NAO TEM PERMISSAO PARA PAGAR ESTE PEDIDO");
+        }
 
         if (pagamentoRepository.findByPedidoId(idPedido).isPresent()) {
             throw new RuntimeException("ESTE PEDIDO JA POSSUI UM PAGAMENTO REGISTRADO");
@@ -120,6 +144,7 @@ public class PagamentoService {
             estoqueService.darBaixaQuantidade(idProduto, quantidade);
         }
 
+        // [IMPORTANTE] FAZ O MEU BACKEND DEFINIR AUTOMATICAMENTE A APROVACAO
         pagamento.setStatusPagamento("APROVADO");
         pagamento.setDataPagamento(LocalDateTime.now());
         pagamento.setPedido(pedidoExistente);
@@ -135,20 +160,52 @@ public class PagamentoService {
     }
 
     public Pagamento buscaId(Long id) {
-        return pagamentoRepository.findById(id)
+
+        Pagamento pagamento = pagamentoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("PAGAMENTO COM O ID " + id + " NAO FOI ENCONTRADO"));
+
+        validarAcessoAoPedido(pagamento.getPedido());
+
+        return pagamento;
     }
 
     public Pagamento buscaPorPedidoId(Long idPedido) {
-        if (!pedidoRepository.existsById(idPedido)) {
-            throw new RuntimeException("PEDIDO COM O ID " + idPedido + " NAO FOI ENCONTRADO");
-        }
+
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new RuntimeException("PEDIDO COM O ID " + idPedido + " NAO FOI ENCONTRADO"));
+
+        validarAcessoAoPedido(pedido);
 
         return pagamentoRepository.findByPedidoId(idPedido)
                 .orElseThrow(() -> new RuntimeException("PAGAMENTO NAO ENCONTRADO PARA O PEDIDO COM O ID " + idPedido));
     }
 
+    private void validarAcessoAoPedido(Pedido pedido) {
+
+        Authentication autenticacao = SecurityContextHolder.getContext().getAuthentication();
+
+        if (autenticacao == null || !autenticacao.isAuthenticated()) {
+            throw new AccessDeniedException("USUARIO NAO AUTENTICADO");
+        }
+
+        boolean administrador = autenticacao.getAuthorities().stream()
+                .anyMatch(autoridade -> autoridade.getAuthority().equals("ROLE_ADMIN"));
+
+        if (administrador) {
+            return;
+        }
+
+        Cliente clienteAutenticado = clienteRepository.findByEmail(autenticacao.getName())
+                .orElseThrow(() -> new AccessDeniedException("CLIENTE NAO ENCONTRADO"));
+
+        if (pedido.getCliente() == null ||
+                !pedido.getCliente().getId().equals(clienteAutenticado.getId())) {
+            throw new AccessDeniedException("VOCE NAO TEM PERMISSAO PARA CONSULTAR ESTE PAGAMENTO");
+        }
+    }
+
     public void deletar(Long id) {
+
         Pagamento pagamento = buscaId(id);
         pagamentoRepository.delete(pagamento);
     }
