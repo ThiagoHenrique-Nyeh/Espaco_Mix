@@ -4,6 +4,7 @@ import com.example.espacomix.model.Cliente;
 import com.example.espacomix.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -12,6 +13,9 @@ public class ClienteService {
 
     @Autowired
     private ClienteRepository clienteRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private static final String TELEFONE_REGEX = "^\\d{10,11}$";
     private static final String CPF_REGEX = "^\\d{11}$";
@@ -57,6 +61,11 @@ public class ClienteService {
         }if(!cliente.getSenha().matches(SENHA_REGEX)){
             throw new RuntimeException("SENHA INVALIDA");
         }
+
+        cliente.setSenha(
+                passwordEncoder.encode(cliente.getSenha())
+        );
+
         return clienteRepository.save(cliente);
     }
 

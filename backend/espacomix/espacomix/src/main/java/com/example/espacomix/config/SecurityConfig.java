@@ -30,11 +30,47 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/auth/**", "/produtos/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/cliente").permitAll()
 
+                        .requestMatchers("/cliente/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/produto", "/produto/**").permitAll()
+
+                        .requestMatchers("/produto", "/produto/**").hasRole("ADMIN")
+
+                        .requestMatchers("/estoque/**").hasRole("ADMIN")
+
                         .requestMatchers("/administrador/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/pedido").hasRole("CLIENTE")
+
+                        .requestMatchers(HttpMethod.GET, "/pedido").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/pedido/cliente/**")
+                        .hasAnyRole("ADMIN", "CLIENTE")
+
+                        .requestMatchers(HttpMethod.GET, "/pedido/*")
+                        .hasAnyRole("ADMIN", "CLIENTE")
+
+                        .requestMatchers(HttpMethod.PATCH, "/pedido/*/status")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/pedido/*")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/itempedido")
+                        .hasRole("CLIENTE")
+
+                        .requestMatchers(HttpMethod.GET, "/itempedido")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.GET, "/itempedido/**")
+                        .hasAnyRole("ADMIN", "CLIENTE")
+
+                        .requestMatchers(HttpMethod.DELETE, "/itempedido/**")
+                        .hasRole("CLIENTE")
 
                         .anyRequest().authenticated()
                 )
